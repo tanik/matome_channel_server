@@ -13,7 +13,7 @@ FactoryGirl.define do
 
     before(:create) do |user, evaluator|
       if evaluator.try(:confirmed)
-        user.skip_confirmation!
+        #user.skip_confirmation!
       end
     end
   end
