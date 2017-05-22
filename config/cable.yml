@@ -1,0 +1,11 @@
+development:
+  adapter: redis
+  url: <%= ENV['CABLE_REDIS_URL'] %>
+  channel_prefix: matome_channel_server_development
+test:
+  adapter: async
+
+production:
+  adapter: redis
+  url: <%= ENV['CABLE_REDIS_URL'] %>
+  channel_prefix: matome_channel_server_production

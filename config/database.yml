@@ -1,0 +1,22 @@
+common: &COMMON
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  pool: 15
+  username: <%= ENV["DATABASE_USER"] || "root" %>
+  password: <%= ENV["DATABASE_PASSWORD"] || "" %>
+  socket: <%= ENV["DATABASE_SOCKET"] || "/tmp/mysql.sock" %>
+  host: <%= ENV["DATABASE_HOST"] %>
+  port: <%= ENV["DATABASE_PORT"] %>
+
+development:
+  <<: *COMMON
+  database: matome_channel_development
+
+test:
+  <<: *COMMON
+  database: matome_channel_test
+
+production:
+  <<: *COMMON
+  database: matome_channel_production
