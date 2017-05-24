@@ -1,5 +1,5 @@
 class BoardsController < ApplicationController
-  before_action :set_board, only: [:show, :update, :destroy]
+  before_action :set_board, only: [:show]
 
   # GET /boards
   def index
@@ -8,37 +8,28 @@ class BoardsController < ApplicationController
       categories = Category.where(id: cid).or(Category.where(parent_id: cid))
       @boards = @boards.where(category_id: categories.map(&:id)) if categories.any?
     end
-    render json: @boards.map(&:to_index_json)
+    render json: @boards.map(&:to_index_params)
   end
 
   # GET /boards/1
   def show
-    render json: @board.to_show_json
+    board = @board.to_show_params
+    board[:current_user_id] = current_user.try(:id)
+    render json: board
   end
 
   # POST /boards
   def create
     @board = Board.new(board_params)
-
+    @board.user = current_user
+    @board.comments.last.remote_ip  = request.remote_ip
+    @board.comments.last.user_agent = request.user_agent
+    @board.comments.last.user = current_user
     if @board.save
       render json: @board, status: :created, location: @board
     else
       render json: @board.errors, status: :unprocessable_entity
     end
-  end
-
-  # PATCH/PUT /boards/1
-  def update
-    if @board.update(board_params)
-      render json: @board
-    else
-      render json: @board.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /boards/1
-  def destroy
-    @board.destroy
   end
 
   private
@@ -49,6 +40,6 @@ class BoardsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def board_params
-      params.require(:board).permit(:title, :score)
+      params.require(:board).permit(:category_id, :title, comments_attributes: [:name, :content])
     end
 end

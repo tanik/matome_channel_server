@@ -4,6 +4,6 @@ class NotifyCommentAddedJob < ApplicationJob
   def perform(comment_id)
     comment = Comment.find(comment_id) rescue nil
     return if comment.nil?
-    BoardChannel.broadcast_to comment.board, action: :comment_added, comment: comment
+    BoardChannel.broadcast_to comment.board, action: :comment_added, comment: comment.to_user_params
   end
 end

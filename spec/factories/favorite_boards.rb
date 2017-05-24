@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :favorite_board do
-    references ""
-    references ""
+    board
+    user
   end
 end

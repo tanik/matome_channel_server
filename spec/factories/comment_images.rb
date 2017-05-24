@@ -1,6 +1,6 @@
 FactoryGirl.define do
-  factory :favorite_comment do
-    user
+  factory :comment_image do
     comment
+    image
   end
 end

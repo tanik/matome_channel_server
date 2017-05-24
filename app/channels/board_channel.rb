@@ -14,8 +14,4 @@ class BoardChannel < ApplicationCable::Channel
     stream_for board
   end
 
-  def notify_add_comment comment
-    self.class.broadcast_to self.board, action: :notify_add_comment, comment: comment
-  end
-
 end

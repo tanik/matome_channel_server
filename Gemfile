@@ -33,11 +33,12 @@ gem 'aws-sdk', '~> 2'
 gem 'aws-sdk-rails'
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
-gem 'webshot'
+gem 'rest-client'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'pry-rails'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem "simplecov"
@@ -45,7 +46,6 @@ end
 
 group :development do
   gem 'foreman'
-  gem 'pry-rails'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'listen', '>= 3.0.5', '< 3.2'

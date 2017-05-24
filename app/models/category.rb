@@ -23,9 +23,13 @@ class Category < ApplicationRecord
   end
 
   def nested_names
-    names = ["総合"]
-    names << self.parent.name if self.parent
-    names << self.name
-    names
+    names = []
+    cat = self
+    loop do
+      names << cat.name
+      cat = cat.parent
+      break if cat.nil?
+    end
+    names.reverse
   end
 end

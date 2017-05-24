@@ -4,6 +4,7 @@ FactoryGirl.define do
   end
 
   factory :comment do
+    board
     name "名無しさん"
     content { generate(:content) }
     remote_ip "1.2.3.4"

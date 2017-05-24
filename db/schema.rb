@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170519084839) do
+ActiveRecord::Schema.define(version: 20170522101844) do
 
   create_table "boards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "category_id"
@@ -29,6 +29,20 @@ ActiveRecord::Schema.define(version: 20170519084839) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "comment_images", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "comment_id"
+    t.bigint "image_id"
+    t.index ["comment_id"], name: "index_comment_images_on_comment_id"
+    t.index ["image_id"], name: "index_comment_images_on_image_id"
+  end
+
+  create_table "comment_websites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "comment_id"
+    t.bigint "website_id"
+    t.index ["comment_id"], name: "index_comment_websites_on_comment_id"
+    t.index ["website_id"], name: "index_comment_websites_on_website_id"
   end
 
   create_table "comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -65,6 +79,16 @@ ActiveRecord::Schema.define(version: 20170519084839) do
     t.index ["user_id"], name: "index_favorite_comments_on_user_id"
   end
 
+  create_table "images", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text "original_url"
+    t.string "content_type"
+    t.string "thumbnail_url"
+    t.string "full_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["original_url"], name: "index_images_on_original_url", unique: true, length: { original_url: 255 }
+  end
+
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
@@ -94,8 +118,22 @@ ActiveRecord::Schema.define(version: 20170519084839) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  create_table "websites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.text "original_url"
+    t.string "title"
+    t.string "thumbnail_url"
+    t.string "full_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["original_url"], name: "index_websites_on_original_url", unique: true, length: { original_url: 255 }
+  end
+
   add_foreign_key "boards", "categories"
   add_foreign_key "boards", "users"
+  add_foreign_key "comment_images", "comments"
+  add_foreign_key "comment_images", "images"
+  add_foreign_key "comment_websites", "comments"
+  add_foreign_key "comment_websites", "websites"
   add_foreign_key "comments", "boards"
   add_foreign_key "comments", "users"
   add_foreign_key "favorite_boards", "boards"
