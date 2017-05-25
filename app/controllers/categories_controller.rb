@@ -2,6 +2,6 @@ class CategoriesController < ApplicationController
   # GET /categories
   def index
     @categories = Category.all
-    render json: @categories
+    render json: @categories.map(&:to_index_params)
   end
 end

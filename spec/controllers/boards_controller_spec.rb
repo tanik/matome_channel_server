@@ -161,4 +161,46 @@ RSpec.describe BoardsController, type: :controller do
     end
   end
 
+  describe "#favorite" do
+    let(:board){ FactoryGirl.create(:board) }
+
+    context "when user signed in" do
+      let(:user){ FactoryGirl.create(:user) }
+      it do
+        set_authentication_headers_for(user)
+        expect{ put :favorite,
+          params: {
+            id: board.id,
+          }
+        }.to change(FavoriteBoard, :count).by(1)
+        expect(response.body).to eq(FavoriteBoard.last.to_json)
+        expect(FavoriteBoard.last.user).to eq(user)
+        expect(FavoriteBoard.last.board).to eq(board)
+      end
+    end
+    context "when the same favorite exists" do
+      let(:user){ FactoryGirl.create(:user) }
+
+      before{ FactoryGirl.create(:favorite_board, user: user, board: board) }
+      it do
+        set_authentication_headers_for(user)
+        expect{ put :favorite,
+          params: {
+            id: board.id,
+          }
+        }.to_not change(FavoriteBoard, :count)
+        expect(response.status).to eq(422)
+      end
+    end
+    context "when user didn't sign in" do
+      it do
+        expect{ put :favorite,
+          params: {
+            id: board.id,
+          }
+        }.to_not change(FavoriteBoard, :count)
+        expect(response.status).to eq(401)
+      end
+    end
+  end
 end

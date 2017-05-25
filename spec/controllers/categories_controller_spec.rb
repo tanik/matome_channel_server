@@ -7,7 +7,7 @@ RSpec.describe CategoriesController, type: :controller do
     before{ categories }
     it do
       get :index
-      expect(response.body).to eq(categories.to_json)
+      expect(response.body).to eq(categories.map(&:to_index_params).to_json)
     end
   end
 end

@@ -40,6 +40,7 @@ class Board < ApplicationRecord
 
   def to_show_params
     hash = to_index_params
+    hash[:favorite_user_ids] = favorite_boards.map(&:user_id)
     hash[:comments] = comments.order(id: :desc).limit(20).map(&:to_user_params)
     hash
   end

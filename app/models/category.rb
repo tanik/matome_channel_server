@@ -32,4 +32,8 @@ class Category < ApplicationRecord
     end
     names.reverse
   end
+
+  def to_index_params
+    attributes.merge(nested_name: nested_name)
+  end
 end

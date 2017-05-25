@@ -60,6 +60,9 @@ RSpec.describe Board, type: :model do
 
   describe "#to_show_params" do
     let(:board){ FactoryGirl.create :board, :with_comments }
+    let(:favorite_board){ FactoryGirl.create :favorite_board, board: board }
+
+    before{ favorite_board }
 
     subject{ board.to_show_params }
 
@@ -71,6 +74,7 @@ RSpec.describe Board, type: :model do
       fav_count: board.fav_count,
       first_comment: board.first_comment,
       thumbnail_url: board.thumbnail_url,
+      favorite_user_ids: [favorite_board.user_id],
       comments: board.comments.order(id: :desc).map(&:to_user_params)})
     }
   end

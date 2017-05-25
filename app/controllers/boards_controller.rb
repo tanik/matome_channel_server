@@ -1,5 +1,6 @@
 class BoardsController < ApplicationController
-  before_action :set_board, only: [:show]
+  before_action :set_board, only: [:show, :favorite]
+  before_action :authenticate_user!, only: [:favorite]
 
   # GET /boards
   def index
@@ -29,6 +30,16 @@ class BoardsController < ApplicationController
       render json: @board, status: :created, location: @board
     else
       render json: @board.errors, status: :unprocessable_entity
+    end
+  end
+
+  # PUT /board/:board_id/favorite
+  def favorite
+    favorite = current_user.favorite_boards.build(board: @board)
+    if favorite.save
+      render json: favorite
+    else
+      render json: favorite.errors, status: :unprocessable_entity
     end
   end
 
