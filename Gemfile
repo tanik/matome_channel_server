@@ -46,6 +46,11 @@ end
 
 group :development do
   gem 'foreman'
+  gem 'capistrano'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'capistrano3-puma'
+  gem 'capistrano-sidekiq'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'listen', '>= 3.0.5', '< 3.2'

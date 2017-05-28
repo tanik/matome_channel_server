@@ -4,7 +4,10 @@ development:
   channel_prefix: matome_channel_server_development
 test:
   adapter: async
-
+staging:
+  adapter: redis
+  url: <%= ENV['CABLE_REDIS_URL'] %>
+  channel_prefix: matome_channel_server_production
 production:
   adapter: redis
   url: <%= ENV['CABLE_REDIS_URL'] %>

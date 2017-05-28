@@ -16,7 +16,9 @@ development:
 test:
   <<: *COMMON
   database: matome_channel_test
-
+staging:
+  <<: *COMMON
+  database: matome_channel_staging
 production:
   <<: *COMMON
   database: matome_channel_production
