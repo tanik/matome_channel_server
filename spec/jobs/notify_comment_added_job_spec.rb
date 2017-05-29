@@ -1,13 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe NotifyCommentAddedJob, type: :job do
-
-  describe "#perform_later" do
+  describe "#perform_async" do
     let(:comment){ FactoryGirl.create(:comment) }
     it "matches with enqueued job" do
-      ActiveJob::Base.queue_adapter = :test
-      comment # enqueued on after_create
-      expect(NotifyCommentAddedJob).to have_been_enqueued
+      expect{ comment }.to change(NotifyCommentAddedJob.jobs, :size).by(1)
     end
   end
 

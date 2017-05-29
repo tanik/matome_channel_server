@@ -6,10 +6,10 @@ class FavoriteBoard < ApplicationRecord
   validates :board_id, uniqueness: {scope: :user_id}
 
   # callbacks
-  after_create :notify_board_favorited
+  after_commit :notify_board_favorited, on: :create
 
   private
   def notify_board_favorited
-    NotifyBoardFavoritedJob.perform_later(self.id)
+    NotifyBoardFavoritedJob.perform_async(self.id)
   end
 end

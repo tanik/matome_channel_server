@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170522101844) do
+ActiveRecord::Schema.define(version: 20170526183919) do
 
   create_table "boards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "category_id"
@@ -81,7 +81,6 @@ ActiveRecord::Schema.define(version: 20170522101844) do
 
   create_table "images", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.text "original_url"
-    t.string "content_type"
     t.string "thumbnail_url"
     t.string "full_url"
     t.datetime "created_at", null: false

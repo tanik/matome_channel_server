@@ -1,8 +1,7 @@
 FactoryGirl.define do
   factory :image do
     original_url "http://example.com/example.png"
-    content_type "image/png"
-    thumbnail_url "http://s3.aws.com/images/1_thumb.png"
-    full_url "http://s3.aws.com/images/1_full.png"
+    thumbnail_url "/images/thumbnails/1.png"
+    full_url "/images/images/1.png"
   end
 end

@@ -55,6 +55,8 @@ RSpec.describe Comment, type: :model do
       content:    comment.content,
       created_at: comment.created_at,
       hash_id:    comment.hash_id,
+      images:     comment.images.map(&:to_user_params),
+      websites:   comment.websites.map(&:to_user_params),
       favorite_user_ids: favorite_comments.map(&:user_id),
     })
     }

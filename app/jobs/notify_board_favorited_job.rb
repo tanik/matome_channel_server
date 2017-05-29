@@ -1,5 +1,7 @@
-class NotifyBoardFavoritedJob < ApplicationJob
-  queue_as :default
+class NotifyBoardFavoritedJob
+  include Sidekiq::Worker
+
+  sidekiq_options queue: 'default', retry: false
 
   def perform(favorite_board_id)
     favorite_board = FavoriteBoard.find(favorite_board_id) rescue nil

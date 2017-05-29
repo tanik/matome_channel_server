@@ -24,13 +24,16 @@ class Comment < ApplicationRecord
   # callbacks
   before_validation :complete_name, on: :create
   before_validation :create_hash_id, on: :create
-  after_create :create_num, :notify_comment_added
+  after_create :create_num
+  after_commit :notify_comment_added, :parse_content, on: :create
 
   def to_user_params
     params = [:id, :user_id, :board_id, :num, :name, :content, :created_at, :hash_id].inject({}) do |ret, key|
       ret[key] = self.send(key)
       ret
     end
+    params[:websites] = websites.map(&:to_user_params)
+    params[:images] = images.map(&:to_user_params)
     params[:favorite_user_ids] = favorite_comments.map(&:user_id)
     params
   end
@@ -51,7 +54,11 @@ class Comment < ApplicationRecord
     self.hash_id = digest[0...HASH_LENGTH]
   end
 
+  def parse_content
+    CommentParser.perform_async(self.id)
+  end
+
   def notify_comment_added
-    NotifyCommentAddedJob.perform_later(self.id)
+    NotifyCommentAddedJob.perform_async(self.id)
   end
 end

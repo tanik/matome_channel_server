@@ -7,12 +7,13 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'simplecov'
 require 'sidekiq/testing'
+require 'webmock/rspec'
 
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 SimpleCov.start 'rails' do
   add_filter "/vender/"
-  minimum_coverage 90
+  minimum_coverage 80
   maximum_coverage_drop 3
 end
 

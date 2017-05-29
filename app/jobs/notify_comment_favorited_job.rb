@@ -1,5 +1,7 @@
-class NotifyCommentFavoritedJob < ApplicationJob
-  queue_as :default
+class NotifyCommentFavoritedJob
+  include Sidekiq::Worker
+
+  sidekiq_options queue: 'default', retry: false
 
   def perform(favorite_comment_id)
     favorite_comment = FavoriteComment.find(favorite_comment_id) rescue nil
