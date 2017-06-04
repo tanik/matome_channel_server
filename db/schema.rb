@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170526183919) do
+ActiveRecord::Schema.define(version: 20170601121540) do
+
+  create_table "board_images", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "board_id"
+    t.bigint "image_id"
+    t.index ["board_id"], name: "index_board_images_on_board_id"
+    t.index ["image_id"], name: "index_board_images_on_image_id"
+  end
+
+  create_table "board_websites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "board_id"
+    t.bigint "website_id"
+    t.index ["board_id"], name: "index_board_websites_on_board_id"
+    t.index ["website_id"], name: "index_board_websites_on_website_id"
+  end
 
   create_table "boards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "category_id"
@@ -85,6 +99,8 @@ ActiveRecord::Schema.define(version: 20170526183919) do
     t.string "full_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "width"
+    t.integer "height"
     t.index ["original_url"], name: "index_images_on_original_url", unique: true, length: { original_url: 255 }
   end
 
@@ -127,6 +143,10 @@ ActiveRecord::Schema.define(version: 20170526183919) do
     t.index ["original_url"], name: "index_websites_on_original_url", unique: true, length: { original_url: 255 }
   end
 
+  add_foreign_key "board_images", "boards"
+  add_foreign_key "board_images", "images"
+  add_foreign_key "board_websites", "boards"
+  add_foreign_key "board_websites", "websites"
   add_foreign_key "boards", "categories"
   add_foreign_key "boards", "users"
   add_foreign_key "comment_images", "comments"

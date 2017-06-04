@@ -10,7 +10,16 @@ RSpec.describe BoardsController, type: :controller do
 
       it do
         get :index
-        expect(response.body).to eq(boards.map(&:to_index_params).to_json)
+        expect(response.body).to eq({
+          boards: boards.map(&:to_index_params),
+          pagination: {
+            per: 25,
+            total: 1,
+            current: 1,
+            next: nil,
+            prev: nil,
+          }
+        }.to_json)
       end
     end
 
@@ -27,7 +36,16 @@ RSpec.describe BoardsController, type: :controller do
 
       it do
         get :index, params: {category_id: matched_category.id}
-        expect(response.body).to eq(matched_boards.map(&:to_index_params).to_json)
+        expect(response.body).to eq({
+          boards: matched_boards.map(&:to_index_params),
+          pagination: {
+            per: 25,
+            total: 1,
+            current: 1,
+            next: nil,
+            prev: nil,
+          }
+        }.to_json)
       end
     end
   end

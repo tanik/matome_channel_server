@@ -23,14 +23,18 @@ class Category < ApplicationRecord
   end
 
   def nested_names
-    names = []
+    tree.map(&:name)
+  end
+
+  def tree
+    categories = []
     cat = self
     loop do
-      names << cat.name
+      categories << cat
       cat = cat.parent
       break if cat.nil?
     end
-    names.reverse
+    categories.reverse
   end
 
   def to_index_params

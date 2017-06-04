@@ -42,6 +42,39 @@ RSpec.describe Board, type: :model do
     it{ is_expected.to eq (favorite_boards.count) }
   end
 
+  describe "#thumbnail_url" do
+    let(:board){ FactoryGirl.create :board }
+
+    subject{ board.thumbnail_url }
+
+    context "board has no image" do
+      it{ is_expected.to eq("#{ENV["AWS_S3_ENDPOINT"]}statics/placeholder.png") }
+    end
+    context "board has only image" do
+      let(:board_image){ FactoryGirl.create :board_image, board: board }
+      before{ board_image }
+      it{ is_expected.to eq(board_image.image.thumbnail) }
+    end
+    context "board has only website" do
+      let(:board_website){ FactoryGirl.create :board_website, board: board }
+      before{ board_website }
+      it{ is_expected.to eq(board_website.website.thumbnail) }
+    end
+    context "board has image and website" do
+      let(:image){ FactoryGirl.create :image, created_at: 1.days.ago }
+      let(:website){ FactoryGirl.create :website, created_at: 2.days.ago }
+      let(:board_image){ FactoryGirl.create :board_image, board: board, image: image }
+      let(:board_website){ FactoryGirl.create :board_website, board: board, website: website }
+
+      before do
+        board_image
+        board_website
+      end
+
+      it{ is_expected.to eq(image.thumbnail) }
+    end
+  end
+
   describe "#to_index_params" do
     let(:board){ FactoryGirl.create :board, :with_comments }
 
@@ -75,6 +108,9 @@ RSpec.describe Board, type: :model do
       first_comment: board.first_comment,
       thumbnail_url: board.thumbnail_url,
       favorite_user_ids: [favorite_board.user_id],
+      category_tree: board.category.tree,
+      websites: board.board_websites.includes(:website).limit(20).map(&:to_user_params),
+      images: board.board_images.includes(:image).limit(20).map(&:to_user_params),
       comments: board.comments.order(id: :desc).map(&:to_user_params)})
     }
   end

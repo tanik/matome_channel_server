@@ -9,16 +9,27 @@ class Website < ApplicationRecord
   # validations
   validates :original_url, presence: true, uniqueness: true
 
+  # scopes
+  scope :cached, ->(){ where.not(title:nil, thumbnail_url: nil, full_url: nil) }
+
   # callbacks
   after_commit :create_webshot, on: :create
+
+  def thumbnail
+    "#{ENV['AWS_S3_ENDPOINT']}#{self.thumbnail_url}"
+  end
+
+  def full
+    "#{ENV['AWS_S3_ENDPOINT']}#{self.full_url}"
+  end
 
   def to_user_params
     {
       id: self.id,
       title: self.title,
       original_url: original_url,
-      full_url: "#{ENV['AWS_S3_ENDPOINT']}#{self.full_url}",
-      thumbnail_url: "#{ENV['AWS_S3_ENDPOINT']}#{self.thumbnail_url}",
+      full_url: full,
+      thumbnail_url: thumbnail,
     }
   end
 

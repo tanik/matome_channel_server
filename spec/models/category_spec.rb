@@ -63,4 +63,10 @@ RSpec.describe Category, type: :model do
 
     it{ is_expected.to eq [root_category.name, child_category.name]}
   end
+
+  describe "#to_index_params" do
+    let(:category){ FactoryGirl.create(:category) }
+    subject{ category.to_index_params }
+    it{ is_expected.to eq(category.attributes.merge(nested_name: category.nested_name)) }
+  end
 end

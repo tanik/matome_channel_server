@@ -6,7 +6,22 @@
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
+server "54.92.64.233",
+  user: "apps",
+  roles: %w{web app db},
+  ssh_options: {
+    user: "apps",
+    port: 20022,
+    keys: %w(~/.ssh/id_rsa),
+    forward_agent: true,
+    auth_methods: %w(publickey)
+  }
 
+
+set :bransh, :master
+set :rails_env, 'production'
+
+#
 
 
 # role-based syntax

@@ -20,10 +20,3 @@
     Category.create!(parent: p, name: n)
   end
 end
-categories = Category.all
-50.times do |i|
-  board = Board.create(category: categories.sample, title: "Board title #{i+1}")
-  100.times do |j|
-    board.comments.create(name: "名無しさん", content: "Board##{board.id}\nComment ##{j}")
-  end
-end

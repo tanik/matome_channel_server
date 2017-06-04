@@ -5,8 +5,10 @@ class CommentsController < ApplicationController
 
   # GET /board/:board_id/comments
   def index
-    @comments = @board.comments.page(params[:page]).per(params[:per])
-    render json: @comments
+    @comments = @board.comments.order(id: :desc).limit(20)
+    @comments = @comments.gt(params[:gt_id]) if params[:gt_id].present?
+    @comments = @comments.lt(params[:lt_id]) if params[:lt_id].present?
+    render json: @comments.map(&:to_user_params)
   end
 
   # GET  /board/:board_id/comments/1

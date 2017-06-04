@@ -54,7 +54,8 @@ Rails.application.configure do
       resource '*',
       headers: :any,
       expose: ['access-token', 'uid', 'client'],
-      methods: [:get, :post, :put, :delete, :options]
+      methods: [:get, :post, :put, :delete, :options],
+      max_age: 0
     end
   end
 end

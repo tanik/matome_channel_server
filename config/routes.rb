@@ -8,6 +8,11 @@ Rails.application.routes.draw do
       put :favorite
     end
     resources :comments, only: [:index, :show, :create] do
+      collection do
+        get 'gt/:gt_id', action: :index
+        get 'lt/:lt_id', action: :index
+        get 'gtlt/:gt_id/:lt_id', action: :index
+      end
       member do
         put :favorite
       end

@@ -12,7 +12,10 @@ class ImageGetterJob
     if response.code == 200
       json = JSON.parse(response.body)
       if json['state'] == 'success'
-        image.update(thumbnail_url: json['thumbnail'], full_url: json['image'])
+        image.update(thumbnail_url: json['thumbnail'],
+                     full_url: json['image'],
+                     width: json['width'],
+                     height: json['height'])
       else
         raise(json['message'])
       end

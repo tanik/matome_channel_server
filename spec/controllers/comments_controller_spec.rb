@@ -8,7 +8,7 @@ RSpec.describe CommentsController, type: :controller do
 
     it do
       get :index, params: {board_id: board.id}
-      expect(response.body).to eq(comments.to_json)
+      expect(response.body).to eq(comments.reverse.map(&:to_user_params).to_json)
     end
   end
 

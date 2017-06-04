@@ -14,6 +14,7 @@ class CommentParser
       Image::PERMITTED_CONTENT_TYPES.each do |permitted_type|
         if content_type.include?(permitted_type)
           image = Image.find_or_create_by(original_url: url)
+          comment.board.board_images.create(image: image)
           comment.comment_images.create(image: image)
           break
         end
@@ -21,6 +22,7 @@ class CommentParser
       next if image
       # not image and movie
       website = Website.find_or_create_by(original_url: url)
+      comment.board.board_websites.create(website: website)
       comment.comment_websites.create(website: website)
     end
   end

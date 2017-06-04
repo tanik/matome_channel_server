@@ -15,17 +15,19 @@ class Comment < ApplicationRecord
   #has_many :comment_movies
   #has_many :movies, through: :comment_movies
 
+  # scopes
+  scope :gt, ->(id){ where(arel_table[:id].gt(id)) }
+  scope :lt, ->(id){ where(arel_table[:id].lt(id)) }
+
   # validation
   validates :name, length: {in: 1..255}
   validates :content, length: {in: 1..2048}
-  #validate :check_remote_host
-  #validate :check_hash_id
 
   # callbacks
   before_validation :complete_name, on: :create
   before_validation :create_hash_id, on: :create
   after_create :create_num
-  after_commit :notify_comment_added, :parse_content, on: :create
+  after_commit :notify_comment_added, :parse_content, :update_board_index, on: :create
 
   def to_user_params
     params = [:id, :user_id, :board_id, :num, :name, :content, :created_at, :hash_id].inject({}) do |ret, key|
@@ -60,5 +62,9 @@ class Comment < ApplicationRecord
 
   def notify_comment_added
     NotifyCommentAddedJob.perform_async(self.id)
+  end
+
+  def update_board_index
+    BoardIndexer.perform_async('update', self.board_id)
   end
 end

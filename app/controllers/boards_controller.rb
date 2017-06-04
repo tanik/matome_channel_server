@@ -9,7 +9,16 @@ class BoardsController < ApplicationController
       categories = Category.where(id: cid).or(Category.where(parent_id: cid))
       @boards = @boards.where(category_id: categories.map(&:id)) if categories.any?
     end
-    render json: @boards.map(&:to_index_params)
+    render json: {
+      boards: @boards.map(&:to_index_params),
+      pagination: {
+        per: @boards.limit_value,
+        total: @boards.total_pages,
+        current: @boards.current_page,
+        next: @boards.next_page,
+        prev: @boards.prev_page,
+      }
+    }
   end
 
   # GET /boards/1
