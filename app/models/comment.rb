@@ -18,6 +18,7 @@ class Comment < ApplicationRecord
   # scopes
   scope :gt, ->(id){ where(arel_table[:id].gt(id)) }
   scope :lt, ->(id){ where(arel_table[:id].lt(id)) }
+  scope :written_after, ->(written_at){ where(arel_table[:created_at].gteq(written_at)) }
 
   # validation
   validates :name, length: {in: 1..255}
@@ -27,7 +28,7 @@ class Comment < ApplicationRecord
   before_validation :complete_name, on: :create
   before_validation :create_hash_id, on: :create
   after_create :create_num
-  after_commit :notify_comment_added, :parse_content, :update_board_index, on: :create
+  after_commit :update_board_score, :notify_comment_added, :parse_content, on: :create
 
   def to_user_params
     params = [:id, :user_id, :board_id, :num, :name, :content, :created_at, :hash_id].inject({}) do |ret, key|
@@ -43,6 +44,10 @@ class Comment < ApplicationRecord
   private
   def create_num
     update!(num: board.increment!(:res_count).res_count)
+  end
+
+  def update_board_score
+    board.update_score
   end
 
   def complete_name
@@ -62,9 +67,5 @@ class Comment < ApplicationRecord
 
   def notify_comment_added
     NotifyCommentAddedJob.perform_async(self.id)
-  end
-
-  def update_board_index
-    BoardIndexer.perform_async('update', self.board_id)
   end
 end

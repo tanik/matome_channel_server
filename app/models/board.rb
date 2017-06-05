@@ -5,6 +5,7 @@ class Board < ApplicationRecord
   # relation
   has_many :favorite_boards
   has_many :comments
+  has_many :comment_favorites, through: :comments, source: :favorite_comments
   belongs_to :category
   belongs_to :user, optional: true
   has_many :board_images, ->(){ order(id: :desc) }
@@ -39,6 +40,19 @@ class Board < ApplicationRecord
     else
       "#{ENV["AWS_S3_ENDPOINT"]}statics/placeholder.png"
     end
+  end
+
+  def update_score
+    # 取り敢えず暫定
+    new_score = comments.count * 1 +
+            board_images.count * 3 +
+            board_websites.count * 3 +
+            comment_favorites.count * 1 +
+            favorite_boards.count * 5 +
+            comments.written_after(1.hours.ago).count * 100 +
+            comments.written_after(12.hours.ago).count * 20 +
+            comments.written_after(24.hours.ago).count * 10
+    update!(score: new_score)
   end
 
   def to_index_params

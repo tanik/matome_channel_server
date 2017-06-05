@@ -6,9 +6,14 @@ class FavoriteComment < ApplicationRecord
   validates :comment_id, uniqueness: {scope: :user_id}
 
   # callbacks
+  after_create :update_board_score
   after_commit :notify_comment_favorited, on: :create
 
   private
+  def update_board_score
+    comment.board.update_score
+  end
+
   def notify_comment_favorited
     NotifyCommentFavoritedJob.perform_async(self.id)
   end

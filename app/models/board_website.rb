@@ -9,6 +9,7 @@ class BoardWebsite < ApplicationRecord
   validates :website_id, uniqueness: {scope: :board_id}
 
   # callbacks
+  after_create :update_board_score
   after_commit :notify_board_website_added, on: :create
 
   def to_user_params
@@ -20,6 +21,10 @@ class BoardWebsite < ApplicationRecord
   end
 
   private
+  def update_board_score
+    board.update_score
+  end
+
   def notify_board_website_added
     NotifyBoardWebsiteAddedJob.perform_async(self.id)
   end

@@ -4,7 +4,11 @@ class BoardsController < ApplicationController
 
   # GET /boards
   def index
-    @boards = Board.page(params[:page]).per(params[:per])
+    if params[:q]
+      @boards = Board.search(params[:q]).page(params[:page]).per(params[:per]).records
+    else
+      @boards = Board.order(score: :desc).page(params[:page]).per(params[:per])
+    end
     if cid = params[:category_id]
       categories = Category.where(id: cid).or(Category.where(parent_id: cid))
       @boards = @boards.where(category_id: categories.map(&:id)) if categories.any?
