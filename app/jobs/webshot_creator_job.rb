@@ -7,7 +7,7 @@ class WebshotCreatorJob
     website = Website.find(website_id) rescue nil
     return if website.nil?
     response = RestClient.post("#{ENV['API_GATEWAY_ENDPOINT']}/webshots",
-      {id: website.id, url: website.original_url}.to_json,
+      {id: website.id, url: website.original_url, bucket: ENV['AWS_S3_BUCKET']}.to_json,
       {content_type: :json, accept: :json, 'x-api-key' => ENV['API_GATEWAY_KEY']})
     if response.code == 200
       json = JSON.parse(response.body)
