@@ -7,7 +7,7 @@ RSpec.describe WebshotCreatorJob, type: :job do
   let(:status){ 200 }
   before do
     stub_request(:post, "#{ENV['API_GATEWAY_ENDPOINT']}/webshots").with({
-      body: {id: website.id, url: website.original_url}.to_json
+      body: {id: website.id, url: website.original_url, bucket: ENV['AWS_S3_BUCKET']}.to_json
     }).to_return({
       status: status,
       body: response

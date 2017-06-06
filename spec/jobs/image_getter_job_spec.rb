@@ -7,7 +7,7 @@ RSpec.describe ImageGetterJob, type: :job do
   let(:status){ 200 }
   before do
     stub_request(:post, "#{ENV['API_GATEWAY_ENDPOINT']}/images").with({
-      body: {id: image.id, url: image.original_url}.to_json
+      body: {id: image.id, url: image.original_url, bucket: ENV['AWS_S3_BUCKET']}.to_json
     }).to_return({
       status: status,
       body: response
