@@ -31,14 +31,50 @@ RSpec.describe CommentParser, type: :job do
       it do
         expect{ CommentParser.new.perform(comment.id) }.
           to change(Image, :count).by(1)
+        expect(Image.last.original_url).to eq(url)
+      end
+      it do
+        expect{ CommentParser.new.perform(comment.id) }.
+          to change(BoardImage, :count).by(1)
+      end
+      it do
+        expect{ CommentParser.new.perform(comment.id) }.
+          to change(CommentImage, :count).by(1)
+      end
+
+      context "image url has already exists" do
+        before{ FactoryGirl.create(:image, original_url: url) }
+        it do
+          expect(BoardChannel).to receive(:broadcast_to).twice
+          expect{ CommentParser.new.perform(comment.id) }.
+            to_not change(Image, :count)
+        end
       end
     end
+
     context "comment exists and website url included" do
       let(:status){ 200 }
       let(:response_headers){ {'Content-Type' => 'text/html'} }
       it do
         expect{ CommentParser.new.perform(comment.id) }.
           to change(Website, :count).by(1)
+        expect(Website.last.original_url).to eq(url)
+      end
+      it do
+        expect{ CommentParser.new.perform(comment.id) }.
+          to change(BoardWebsite, :count).by(1)
+      end
+      it do
+        expect{ CommentParser.new.perform(comment.id) }.
+          to change(CommentWebsite, :count).by(1)
+      end
+      context "website url has already exists" do
+        before{ FactoryGirl.create(:website, original_url: url) }
+        it do
+          expect(BoardChannel).to receive(:broadcast_to).twice
+          expect{ CommentParser.new.perform(comment.id) }.
+            to_not change(Website, :count)
+        end
       end
     end
     context "comment exists and website url included" do

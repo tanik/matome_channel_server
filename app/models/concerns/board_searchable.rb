@@ -5,7 +5,8 @@ module BoardSearchable
     include Elasticsearch::Model
 
     after_commit :create_index, on: :create
-    after_commit :update_index, on: :update
+    # score 更新時とかは不要なのでコメント追加時のみにしようかな・・
+    #after_commit :update_index, on: :update
     after_destroy :destroy_index
 
     index_name "boards-#{Rails.env}"
@@ -65,9 +66,9 @@ module BoardSearchable
       BoardIndexer.perform_async('create', self.id)
     end
 
-    def update_index
-      BoardIndexer.perform_async('update', self.id)
-    end
+    #def update_index
+    #  BoardIndexer.perform_async('update', self.id)
+    #end
 
     def destroy_index
       # not async

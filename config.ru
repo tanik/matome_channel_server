@@ -2,6 +2,6 @@
 
 require_relative 'config/environment'
 
-map '/backend' || '/' do
+map '/backend' do
   run Rails.application
 end

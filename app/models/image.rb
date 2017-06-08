@@ -12,9 +12,6 @@ class Image < ApplicationRecord
   # scopes
   scope :cached, ->(){ where.not(thumbnail_url: nil, full_url: nil) }
 
-  # callbacks
-  after_commit :get_image, on: :create
-
   def thumbnail
     "#{ENV['AWS_S3_ENDPOINT']}#{self.thumbnail_url}"
   end
@@ -31,10 +28,5 @@ class Image < ApplicationRecord
       width: width,
       height: height,
     }
-  end
-
-  private
-  def get_image
-    ImageGetterJob.perform_async(self.id)
   end
 end

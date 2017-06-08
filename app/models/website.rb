@@ -12,9 +12,6 @@ class Website < ApplicationRecord
   # scopes
   scope :cached, ->(){ where.not(title:nil, thumbnail_url: nil, full_url: nil) }
 
-  # callbacks
-  after_commit :create_webshot, on: :create
-
   def thumbnail
     "#{ENV['AWS_S3_ENDPOINT']}#{self.thumbnail_url}"
   end
@@ -31,10 +28,5 @@ class Website < ApplicationRecord
       full_url: full,
       thumbnail_url: thumbnail,
     }
-  end
-
-  private
-  def create_webshot
-    WebshotCreatorJob.perform_async(self.id)
   end
 end
