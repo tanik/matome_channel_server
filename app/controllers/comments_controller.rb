@@ -11,10 +11,23 @@ class CommentsController < ApplicationController
     render json: @comments.map(&:to_user_params)
   end
 
+  # GET  /board/:board_id/comments/num/:num
+  def show_by_num
+    comment = @board.comments.find_by(num: params[:num])
+    render json: {
+      comment: comment.to_user_params,
+      related_comments: comment.all_related_comments.map(&:to_user_params),
+    }
+  end
+
   # GET  /board/:board_id/comments/1
   def show
-    render json: @comment
+    render json: {
+      comment: @comment.to_user_params,
+      related_comments: @comment.all_related_comments.map(&:to_user_params),
+    }
   end
+
 
   # POST  /board/:board_id/comments
   def create

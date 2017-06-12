@@ -9,9 +9,10 @@ Rails.application.routes.draw do
     end
     resources :comments, only: [:index, :show, :create] do
       collection do
-        get 'gt/:gt_id', action: :index
-        get 'lt/:lt_id', action: :index
-        get 'gtlt/:gt_id/:lt_id', action: :index
+        get 'gt/:gt_id', action: :index, constraints: { gt_id: /\d+/ }
+        get 'lt/:lt_id', action: :index, constraints: { lt_id: /\d+/ }
+        get 'gtlt/:gt_id/:lt_id', action: :index, constraints: { gt_id: /\d+/, lt_id: /\d+/ }
+        get 'num/:num', action: :show_by_num, constraints: { num: /\d+/, to_num: /\d+/ }
       end
       member do
         put :favorite

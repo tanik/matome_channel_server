@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe CommentParser, type: :job do
-  let(:comment){ FactoryGirl.create(:comment, content: content) }
+  let(:board){ FactoryGirl.create(:board) }
+  let(:comment){ FactoryGirl.create(:comment, board: board, content: content) }
   let(:content) do
     <<-EOS
     test
@@ -25,6 +26,17 @@ RSpec.describe CommentParser, type: :job do
   end
 
   describe "#perform" do
+    context "comment exists and anchor included" do
+      let(:content){ ">>#{anchor_comment.num}" }
+      let(:anchor_comment){ FactoryGirl.create(:comment, board: board) }
+      it do
+        expect{ CommentParser.new.perform(comment.id) }.
+          to change(CommentRelation, :count).by(1)
+        expect(CommentRelation.last.comment_id).to eq(comment.id)
+        expect(CommentRelation.last.related_comment_id).to eq(anchor_comment.id)
+      end
+    end
+
     context "comment exists and image url included" do
       let(:status){ 200 }
       let(:response_headers){ {'Content-Type' => 'image/png'} }
@@ -77,6 +89,7 @@ RSpec.describe CommentParser, type: :job do
         end
       end
     end
+
     context "comment exists and website url included" do
       let(:status){ 404 }
       let(:response_headers){ {'Content-Type' => 'text/html'} }
@@ -85,6 +98,7 @@ RSpec.describe CommentParser, type: :job do
           to raise_error(RestClient::NotFound)
       end
     end
+
     context "comment doesn't exist" do
       it "comment should not be broadcasted" do
         expect(URI).to_not receive(:extract)

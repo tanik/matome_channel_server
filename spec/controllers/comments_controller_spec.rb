@@ -12,15 +12,51 @@ RSpec.describe CommentsController, type: :controller do
     end
   end
 
+  describe "#show_by_num" do
+    let(:board){ FactoryGirl.create(:board) }
+    let(:comment){ FactoryGirl.create(:comment, board: board) }
+    let(:anchor_comment){ FactoryGirl.create(:comment_relation, comment: comment).related_comment }
+    let(:anchored_comment){ FactoryGirl.create(:comment_relation, related_comment: comment).comment }
+
+    before do
+      comment
+      anchor_comment
+      anchored_comment
+    end
+
+    it do
+      get :show_by_num, params: {board_id: board.id, num: comment.num}
+      expect(response.body).to eq({
+        comment: comment.to_user_params,
+        related_comments: [
+          anchored_comment.to_user_params,
+          anchor_comment.to_user_params
+        ]
+      }.to_json)
+    end
+  end
+
   describe "#show" do
     let(:board){ FactoryGirl.create(:board) }
     let(:comment){ FactoryGirl.create(:comment, board: board) }
+    let(:anchor_comment){ FactoryGirl.create(:comment_relation, comment: comment).related_comment }
+    let(:anchored_comment){ FactoryGirl.create(:comment_relation, related_comment: comment).comment }
 
-    before{ comment }
+    before do
+      comment
+      anchor_comment
+      anchored_comment
+    end
 
     it do
       get :show, params: {board_id: board.id, id: comment.id}
-      expect(response.body).to eq(comment.to_json)
+      expect(response.body).to eq({
+        comment: comment.to_user_params,
+        related_comments: [
+          anchored_comment.to_user_params,
+          anchor_comment.to_user_params
+        ]
+      }.to_json)
     end
   end
 

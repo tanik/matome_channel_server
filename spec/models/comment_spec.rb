@@ -61,4 +61,19 @@ RSpec.describe Comment, type: :model do
     })
     }
   end
+
+  describe "#all_related_comments" do
+    let(:comment){ FactoryGirl.create(:comment) }
+    let(:anchor_comment){ FactoryGirl.create(:comment_relation, comment: comment).related_comment }
+    let(:anchored_comment){ FactoryGirl.create(:comment_relation, related_comment: comment).comment }
+
+    before do
+      anchor_comment
+      anchored_comment
+    end
+
+    subject{ comment.all_related_comments }
+
+    it{ is_expected.to eq([anchored_comment, anchor_comment]) }
+  end
 end

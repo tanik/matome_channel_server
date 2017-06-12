@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170601121540) do
+ActiveRecord::Schema.define(version: 20170610165852) do
 
   create_table "board_images", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "board_id"
@@ -52,6 +52,13 @@ ActiveRecord::Schema.define(version: 20170601121540) do
     t.index ["image_id"], name: "index_comment_images_on_image_id"
   end
 
+  create_table "comment_relations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "comment_id"
+    t.bigint "related_comment_id"
+    t.index ["comment_id"], name: "index_comment_relations_on_comment_id"
+    t.index ["related_comment_id"], name: "index_comment_relations_on_related_comment_id"
+  end
+
   create_table "comment_websites", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "comment_id"
     t.bigint "website_id"
@@ -70,6 +77,7 @@ ActiveRecord::Schema.define(version: 20170601121540) do
     t.string "user_agent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["board_id", "num"], name: "index_comments_on_board_id_and_num"
     t.index ["board_id"], name: "index_comments_on_board_id"
     t.index ["hash_id"], name: "index_comments_on_hash_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
@@ -151,6 +159,8 @@ ActiveRecord::Schema.define(version: 20170601121540) do
   add_foreign_key "boards", "users"
   add_foreign_key "comment_images", "comments"
   add_foreign_key "comment_images", "images"
+  add_foreign_key "comment_relations", "comments"
+  add_foreign_key "comment_relations", "comments", column: "related_comment_id"
   add_foreign_key "comment_websites", "comments"
   add_foreign_key "comment_websites", "websites"
   add_foreign_key "comments", "boards"

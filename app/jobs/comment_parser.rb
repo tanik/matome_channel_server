@@ -6,6 +6,19 @@ class CommentParser
   def perform(comment_id)
     comment = Comment.find(comment_id) rescue nil
     return if comment.nil?
+    parse_anchor(comment)
+    parse_url(comment)
+  end
+
+  private
+  def parse_anchor comment
+    comment.content.scan(/>>(\d+)/).flatten.each do |num|
+      related_comment = Comment.find_by(board_id: comment.board_id, num: num)
+      comment.comment_relations.create(related_comment: related_comment) if related_comment
+    end
+  end
+
+  def parse_url comment
     URI.extract(comment.content, ['http', 'https']) do |url|
       url = url.gsub(/^(ttp:\/\/|ttps:\/\/)/){|m|"h#{m}"}
       resp = RestClient.head(url)
@@ -23,7 +36,6 @@ class CommentParser
     end
   end
 
-  private
   def create_resource klass, comment, url
     klass_name = klass.name.underscore
     klass_names = klass_name.pluralize

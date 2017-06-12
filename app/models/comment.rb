@@ -12,6 +12,10 @@ class Comment < ApplicationRecord
   has_many :websites, through: :comment_websites
   has_many :comment_images
   has_many :images, through: :comment_images
+  has_many :comment_relations
+  has_many :anchor_comments, through: :comment_relations, source: :related_comment
+  has_many :from_comment_relations, class_name: 'CommentRelation', foreign_key: :related_comment_id
+  has_many :anchored_comments, through: :from_comment_relations, source: :comment
   #has_many :comment_movies
   #has_many :movies, through: :comment_movies
 
@@ -19,6 +23,8 @@ class Comment < ApplicationRecord
   scope :gt, ->(id){ where(arel_table[:id].gt(id)) }
   scope :lt, ->(id){ where(arel_table[:id].lt(id)) }
   scope :written_after, ->(written_at){ where(arel_table[:created_at].gteq(written_at)) }
+  scope :num_gteq, ->(num){ where(arel_table[:num].gteq(num)) }
+  scope :num_lteq, ->(num){ where(arel_table[:num].lteq(num)) }
 
   # validation
   validates :name, length: {in: 1..255}
@@ -39,6 +45,10 @@ class Comment < ApplicationRecord
     params[:images] = images.map(&:to_user_params)
     params[:favorite_user_ids] = favorite_comments.map(&:user_id)
     params
+  end
+
+  def all_related_comments
+    (anchor_comments.to_a + anchored_comments.to_a).sort{|a,b| b.id <=> a.id }
   end
 
   private
