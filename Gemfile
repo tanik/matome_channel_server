@@ -25,6 +25,7 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'kaminari'
 gem 'devise_token_auth'
 gem 'omniauth'
+gem 'devise-i18n'
 gem 'redis', '~> 3.0'
 gem 'redis-namespace'
 gem 'sidekiq'
@@ -35,6 +36,7 @@ gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
 gem 'rest-client'
 gem 'newrelic_rpm'
+gem 'rails-i18n', '~> 5.0.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
