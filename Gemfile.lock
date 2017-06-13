@@ -120,6 +120,9 @@ GEM
       multi_json
     erubi (1.6.0)
     erubis (2.7.0)
+    exception_notification (4.2.1)
+      actionmailer (>= 4.0, < 6)
+      activesupport (>= 4.0, < 6)
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.8.0)
@@ -206,6 +209,10 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 5.1.1)
       sprockets-rails (>= 2.0.0)
+    rails-controller-testing (1.0.1)
+      actionpack (~> 5.x)
+      actionview (~> 5.x)
+      activesupport (~> 5.x)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
@@ -263,6 +270,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
+    slack-notifier (2.2.1)
     slop (3.6.0)
     spring (2.0.1)
       activesupport (>= 4.2)
@@ -315,6 +323,7 @@ DEPENDENCIES
   dotenv
   elasticsearch-model
   elasticsearch-rails
+  exception_notification
   factory_girl_rails
   foreman
   kaminari
@@ -326,6 +335,7 @@ DEPENDENCIES
   puma (~> 3.7)
   rack-cors
   rails (~> 5.1.0)
+  rails-controller-testing
   rails-i18n (~> 5.0.0)
   redis (~> 3.0)
   redis-namespace
@@ -333,6 +343,7 @@ DEPENDENCIES
   rspec-rails
   sidekiq
   simplecov
+  slack-notifier
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data

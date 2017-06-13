@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170610165852) do
+ActiveRecord::Schema.define(version: 20170613074026) do
 
   create_table "board_images", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "board_id"
@@ -81,6 +81,13 @@ ActiveRecord::Schema.define(version: 20170610165852) do
     t.index ["board_id"], name: "index_comments_on_board_id"
     t.index ["hash_id"], name: "index_comments_on_hash_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "contacts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "email"
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "favorite_boards", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

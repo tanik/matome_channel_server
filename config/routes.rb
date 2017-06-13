@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       end
     end
   end
+  resources :contacts, only: [:create]
 
   # sidekiq
   Sidekiq::Web.use Rack::Auth::Basic do |username, password|

@@ -37,6 +37,8 @@ gem 'elasticsearch-rails'
 gem 'rest-client'
 gem 'newrelic_rpm'
 gem 'rails-i18n', '~> 5.0.0'
+gem 'exception_notification'
+gem 'slack-notifier'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -44,6 +46,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
+  gem 'rails-controller-testing'
   gem 'webmock'
   gem "simplecov"
 end
