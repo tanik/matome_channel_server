@@ -120,6 +120,8 @@ GEM
       multi_json
     erubi (1.6.0)
     erubis (2.7.0)
+    et-orbi (1.0.4)
+      tzinfo
     exception_notification (4.2.1)
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
@@ -259,12 +261,17 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     ruby_dep (1.5.0)
+    rufus-scheduler (3.4.2)
+      et-orbi (~> 1.0)
     safe_yaml (1.0.4)
     sidekiq (4.2.9)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
       redis (~> 3.2, >= 3.2.1)
+    sidekiq-cron (0.6.0)
+      rufus-scheduler (>= 3.3.0)
+      sidekiq (>= 4.2.1)
     simplecov (0.13.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -342,6 +349,7 @@ DEPENDENCIES
   rest-client
   rspec-rails
   sidekiq
+  sidekiq-cron
   simplecov
   slack-notifier
   spring
@@ -350,4 +358,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.14.6
+   1.15.1

@@ -1,0 +1,4 @@
+board_score_calculater:
+  cron: "0 * * * *"
+  class: BoardScoreCalculater
+  queue: default

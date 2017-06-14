@@ -60,7 +60,6 @@ RSpec.describe BoardsController, type: :controller do
       it do
         set_authentication_headers_for(user)
         expected = board.to_show_params
-        expected[:current_user_id] = user.id
         get :show, params: { id: board.id }
         expect(response.body).to eq(expected.to_json)
       end
@@ -69,7 +68,6 @@ RSpec.describe BoardsController, type: :controller do
     context "when user didn't sign in" do
       it do
         expected = board.to_show_params
-        expected[:current_user_id] = nil
         get :show, params: { id: board.id }
         expect(response.body).to eq(expected.to_json)
       end

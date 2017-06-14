@@ -28,7 +28,6 @@ class BoardsController < ApplicationController
   # GET /boards/1
   def show
     board = @board.to_show_params
-    board[:current_user_id] = current_user.try(:id)
     render json: board
   end
 
