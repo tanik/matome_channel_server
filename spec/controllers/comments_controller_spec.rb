@@ -12,6 +12,31 @@ RSpec.describe CommentsController, type: :controller do
     end
   end
 
+  describe "#popular" do
+    context "when category_id exists" do
+      let(:root_category){ FactoryGirl.create(:category, :root) }
+      let(:child_category){ FactoryGirl.create(:category, parent: root_category) }
+      let(:comments){ FactoryGirl.create_list(:comment, 5) }
+
+      it do
+        expect(Comment).to receive(:popular).
+          with(anything, 10, [root_category.id, child_category.id]).and_return(comments)
+        get :popular, params: {category_id: root_category}
+        expect(response.body).to eq(comments.map(&:to_user_params_with_board).to_json)
+      end
+    end
+
+    context "when category_id doesn't exist" do
+      let(:comments){ FactoryGirl.create_list(:comment, 5) }
+      it do
+        expect(Comment).to receive(:popular).
+          with(anything, 10, []).and_return(comments)
+        get :popular
+        expect(response.body).to eq(comments.map(&:to_user_params_with_board).to_json)
+      end
+    end
+  end
+
   describe "#show_by_num" do
     let(:board){ FactoryGirl.create(:board) }
     let(:comment){ FactoryGirl.create(:comment, board: board) }
@@ -35,6 +60,7 @@ RSpec.describe CommentsController, type: :controller do
       }.to_json)
     end
   end
+
 
   describe "#show" do
     let(:board){ FactoryGirl.create(:board) }

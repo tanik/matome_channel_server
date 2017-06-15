@@ -36,6 +36,41 @@ class Comment < ApplicationRecord
   after_create :create_num
   after_commit :update_board_score, :notify_comment_added, :parse_content, :update_board_index,  on: :create
 
+  class << self
+    def popular time, limit, category_ids=[]
+      # TODO もう少しねったほうがイイかもしれん…
+      # time 以降のfavoriteの数+replyの数を計算
+      cat_cond =
+        if category_ids.any?
+          "category_id in (#{category_ids.join(",")})"
+        else
+          "1=1"
+        end
+      sql = <<~EOS
+        select
+          comments.id as id,
+          boards.id as board_id,
+          boards.category_id as category_id,
+          (count(favorite_comments.id) + count(comment_relations.id)) as score
+        from
+          comments
+            left outer join boards on comments.board_id = boards.id
+            left outer join favorite_comments on comments.id = favorite_comments.comment_id AND favorite_comments.created_at > ?
+            left outer join comment_relations on comments.id = comment_relations.related_comment_id AND comment_relations.created_at > ?
+        where
+          #{cat_cond}
+        group by
+          comments.id
+        having
+          score > 0
+        order by
+          score DESC, id DESC
+        limit ?
+      EOS
+      self.find_by_sql([sql, time, time, limit]).map(&:reload)
+    end
+  end
+
   def to_user_params
     params = [:id, :user_id, :board_id, :num, :name, :content, :created_at, :hash_id].inject({}) do |ret, key|
       ret[key] = self.send(key)
@@ -46,6 +81,19 @@ class Comment < ApplicationRecord
     params[:favorite_user_ids] = favorite_comments.map(&:user_id)
     params
   end
+
+  def to_user_params_with_board
+    params = [:id, :user_id, :num, :name, :content, :created_at, :hash_id].inject({}) do |ret, key|
+      ret[key] = self.send(key)
+      ret
+    end
+    params[:board] = board.to_index_params
+    params[:websites] = websites.map(&:to_user_params)
+    params[:images] = images.map(&:to_user_params)
+    params[:favorite_user_ids] = favorite_comments.map(&:user_id)
+    params
+  end
+
 
   def all_related_comments
     (anchor_comments.to_a + anchored_comments.to_a).sort{|a,b| b.id <=> a.id }

@@ -11,6 +11,10 @@ class BoardWebsite < ApplicationRecord
   # callbacks
   after_create :update_board_score
 
+  # scopes
+  scope :gt, ->(id){ where(arel_table[:id].gt(id)) }
+  scope :lt, ->(id){ where(arel_table[:id].lt(id)) }
+
   def to_user_params
     {
       id: id,

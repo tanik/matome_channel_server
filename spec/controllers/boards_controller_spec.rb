@@ -11,7 +11,7 @@ RSpec.describe BoardsController, type: :controller do
       it do
         get :index
         expect(response.body).to eq({
-          boards: boards.map(&:to_index_params),
+          boards: boards.sort{|a,b| b.score <=> a.score }.map(&:to_index_params),
           pagination: {
             per: 25,
             total: 1,
@@ -37,7 +37,7 @@ RSpec.describe BoardsController, type: :controller do
       it do
         get :index, params: {category_id: matched_category.id}
         expect(response.body).to eq({
-          boards: matched_boards.map(&:to_index_params),
+          boards: matched_boards.sort{|a,b| b.score <=> a.score }.map(&:to_index_params),
           pagination: {
             per: 25,
             total: 1,
@@ -47,6 +47,60 @@ RSpec.describe BoardsController, type: :controller do
           }
         }.to_json)
       end
+    end
+  end
+
+  describe "#images" do
+    let(:board){ FactoryGirl.create(:board) }
+    let(:board_images){ FactoryGirl.create_list(:board_image, 10, board: board) }
+
+    it do
+      board_images
+      get :images, params: {id: board.id}
+      expect(response.body).to eq(board_images.reverse.map(&:to_user_params).to_json)
+    end
+
+    it do
+      board_images
+      get :images, params: {id: board.id, gt_id: board_images[5]}
+      expect(response.body).to eq(board_images[6..-1].reverse.map(&:to_user_params).to_json)
+    end
+    it do
+      board_images
+      get :images, params: {id: board.id, lt_id: board_images[5]}
+      expect(response.body).to eq(board_images[0..4].reverse.map(&:to_user_params).to_json)
+    end
+    it do
+      board_images
+      get :images, params: {id: board.id, gt_id: board_images[2], lt_id: board_images[6]}
+      expect(response.body).to eq(board_images[3..5].reverse.map(&:to_user_params).to_json)
+    end
+  end
+
+  describe "#websites" do
+    let(:board){ FactoryGirl.create(:board) }
+    let(:board_websites){ FactoryGirl.create_list(:board_website, 10, board: board) }
+
+    it do
+      board_websites
+      get :websites, params: {id: board.id}
+      expect(response.body).to eq(board_websites.reverse.map(&:to_user_params).to_json)
+    end
+
+    it do
+      board_websites
+      get :websites, params: {id: board.id, gt_id: board_websites[5]}
+      expect(response.body).to eq(board_websites[6..-1].reverse.map(&:to_user_params).to_json)
+    end
+    it do
+      board_websites
+      get :websites, params: {id: board.id, lt_id: board_websites[5]}
+      expect(response.body).to eq(board_websites[0..4].reverse.map(&:to_user_params).to_json)
+    end
+    it do
+      board_websites
+      get :websites, params: {id: board.id, gt_id: board_websites[2], lt_id: board_websites[6]}
+      expect(response.body).to eq(board_websites[3..5].reverse.map(&:to_user_params).to_json)
     end
   end
 

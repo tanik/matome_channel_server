@@ -1,5 +1,5 @@
 class BoardsController < ApplicationController
-  before_action :set_board, only: [:show, :favorite]
+  before_action :set_board, only: [:show, :favorite, :images, :websites]
   before_action :authenticate_user!, only: [:favorite]
 
   # GET /boards
@@ -7,7 +7,8 @@ class BoardsController < ApplicationController
     if params[:q]
       @boards = Board.search(params[:q]).page(params[:page]).per(params[:per]).records
     else
-      @boards = Board.order(score: :desc).page(params[:page]).per(params[:per])
+      @boards = Board.order(score: :desc).order(updated_at: :desc).
+        page(params[:page]).per(params[:per])
     end
     if cid = params[:category_id]
       categories = Category.where(id: cid).or(Category.where(parent_id: cid))
@@ -25,10 +26,32 @@ class BoardsController < ApplicationController
     }
   end
 
+  # GET /boards/1/images
+  # GET /boards/1/images/gt/:gt_id
+  # GET /boards/1/images/lt/:lt_id
+  # GET /boards/1/images/gtlt/:gt_id/:lt_id
+  def images
+    @images = @board.board_images.includes(:image).order(id: :desc).limit(20)
+    @images = @images.gt(params[:gt_id]) if params[:gt_id].present?
+    @images = @images.lt(params[:lt_id]) if params[:lt_id].present?
+    render json: @images.map(&:to_user_params)
+  end
+
+  # GET /boards/1/websites
+  # GET /boards/1/websites/gt/:gt_id
+  # GET /boards/1/websites/lt/:lt_id
+  # GET /boards/1/websites/gtlt/:gt_id/:lt_id
+  def websites
+    @websites = @board.board_websites.includes(:website).order(id: :desc).limit(20)
+    @websites = @websites.gt(params[:gt_id]) if params[:gt_id].present?
+    @websites = @websites.lt(params[:lt_id]) if params[:lt_id].present?
+    render json: @websites.map(&:to_user_params)
+  end
+
   # GET /boards/1
   def show
-    board = @board.to_show_params
-    render json: board
+    current_user.try(:add_history, @board)
+    render json: @board.to_show_params
   end
 
   # POST /boards

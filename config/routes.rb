@@ -6,6 +6,14 @@ Rails.application.routes.draw do
   resources :categories, only: [:index]
   resources :boards, only: [:index, :show, :create] do
     member do
+      get 'images', action: :images
+      get 'images/gt/:gt_id', action: :images, constraints: { gt_id: /\d+/ }
+      get 'images/lt/:lt_id', action: :images, constraints: { lt_id: /\d+/ }
+      get 'images/gtlt/:gt_id/:lt_id', action: :index, constraints: { gt_id: /\d+/, lt_id: /\d+/ }
+      get 'websites', action: :websites
+      get 'websites/gt/:gt_id', action: :websites, constraints: { gt_id: /\d+/ }
+      get 'websites/lt/:lt_id', action: :websites, constraints: { lt_id: /\d+/ }
+      get 'websites/gtlt/:gt_id/:lt_id', action: :index, constraints: { gt_id: /\d+/, lt_id: /\d+/ }
       put :favorite
     end
     resources :comments, only: [:index, :show, :create] do
@@ -20,7 +28,10 @@ Rails.application.routes.draw do
       end
     end
   end
+  get 'comments/popular', controller: :comments, action: :popular
   resources :contacts, only: [:create]
+  get 'my', controller: :my, action: :index
+  get 'my/comments', controller: :my, action: :comments
 
   # sidekiq
   Sidekiq::Web.use Rack::Auth::Basic do |username, password|

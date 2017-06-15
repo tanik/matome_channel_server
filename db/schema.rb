@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170613074026) do
+ActiveRecord::Schema.define(version: 20170615104623) do
 
   create_table "board_images", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "board_id"
@@ -55,6 +55,8 @@ ActiveRecord::Schema.define(version: 20170613074026) do
   create_table "comment_relations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.bigint "comment_id"
     t.bigint "related_comment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["comment_id"], name: "index_comment_relations_on_comment_id"
     t.index ["related_comment_id"], name: "index_comment_relations_on_related_comment_id"
   end
@@ -106,6 +108,15 @@ ActiveRecord::Schema.define(version: 20170613074026) do
     t.datetime "updated_at", null: false
     t.index ["comment_id"], name: "index_favorite_comments_on_comment_id"
     t.index ["user_id"], name: "index_favorite_comments_on_user_id"
+  end
+
+  create_table "histories", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.bigint "user_id"
+    t.bigint "board_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_histories_on_board_id"
+    t.index ["user_id"], name: "index_histories_on_user_id"
   end
 
   create_table "images", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -176,4 +187,6 @@ ActiveRecord::Schema.define(version: 20170613074026) do
   add_foreign_key "favorite_boards", "users"
   add_foreign_key "favorite_comments", "comments"
   add_foreign_key "favorite_comments", "users"
+  add_foreign_key "histories", "boards"
+  add_foreign_key "histories", "users"
 end

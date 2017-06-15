@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :set_board
+  before_action :set_board, except: [:popular]
   before_action :authenticate_user!, only: [:favorite]
   before_action :set_comment, only: [:show, :favorite]
 
@@ -9,6 +9,17 @@ class CommentsController < ApplicationController
     @comments = @comments.gt(params[:gt_id]) if params[:gt_id].present?
     @comments = @comments.lt(params[:lt_id]) if params[:lt_id].present?
     render json: @comments.map(&:to_user_params)
+  end
+
+  def popular
+    category_ids =
+      if params[:category_id].present?
+        Category.where(id: params[:category_id]).or(Category.where(parent_id: params[:category_id])).map(&:id)
+      else
+        []
+      end
+    @comments = Comment.popular(1.hour.ago, 10, category_ids)
+    render json: @comments.map(&:to_user_params_with_board)
   end
 
   # GET  /board/:board_id/comments/num/:num

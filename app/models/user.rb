@@ -10,4 +10,12 @@ class User < ApplicationRecord
   has_many :comments
   has_many :favorite_boards
   has_many :favorite_comments
+  has_many :histories
+
+  def add_history board
+    histories.find_by(board_id: board.id).try(:destroy)
+    histories.create(board: board)
+    new_histories = histories.order(id: :desc).to_a
+    History.where(id: new_histories[30..-1].map(&:id)).delete_all if new_histories.size > 30
+  end
 end
