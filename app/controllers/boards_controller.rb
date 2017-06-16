@@ -9,12 +9,12 @@ class BoardsController < ApplicationController
     else
       @boards = Board.order(score: :desc).order(updated_at: :desc).
         page(params[:page]).per(params[:per])
+      if cid = params[:category_id]
+        categories = Category.where(id: cid).or(Category.where(parent_id: cid))
+        @boards = @boards.where(category_id: categories.map(&:id)) if categories.any?
+      end
+      @boards = @boards.includes(:first_comment)
     end
-    if cid = params[:category_id]
-      categories = Category.where(id: cid).or(Category.where(parent_id: cid))
-      @boards = @boards.where(category_id: categories.map(&:id)) if categories.any?
-    end
-    @boards = @boards.includes(:first_comment)
     render json: {
       boards: @boards.map(&:to_index_params),
       pagination: {
