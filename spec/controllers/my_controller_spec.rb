@@ -9,8 +9,8 @@ RSpec.describe MyController, type: :controller do
       let(:comments){ FactoryGirl.create_list(:comment, 10, board: favorite_board.board) }
       let(:histories){ FactoryGirl.create_list(:history, 5, user: user) }
       before do
-        expect(Comment).to receive(:popular).
-          with(anything, 3).and_return(populars)
+        expect(Comment).to receive_message_chain(:popular, :includes, :includes, :includes, :includes, :includes)
+          .and_return(populars)
         histories
         comments
         set_authentication_headers_for(user)

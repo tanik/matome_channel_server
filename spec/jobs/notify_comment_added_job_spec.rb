@@ -15,7 +15,7 @@ RSpec.describe NotifyCommentAddedJob, type: :job do
         expect(BoardChannel).to receive(:broadcast_to).with(
           comment.board,
           action: :comment_added,
-          comment: comment.to_user_params
+          comment: comment.to_user_params_with_board
         )
         NotifyCommentAddedJob.new.perform(comment.id)
       end

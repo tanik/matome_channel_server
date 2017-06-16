@@ -14,6 +14,7 @@ class BoardsController < ApplicationController
       categories = Category.where(id: cid).or(Category.where(parent_id: cid))
       @boards = @boards.where(category_id: categories.map(&:id)) if categories.any?
     end
+    @boards = @boards.includes(:first_comment)
     render json: {
       boards: @boards.map(&:to_index_params),
       pagination: {

@@ -20,6 +20,7 @@ class ResourceCreatorJob
       json = JSON.parse(response.body)
       if json['state'] == 'success'
         resource.update(update_params(klass_name, json))
+        board_resource.board.update(thumbnail_url: resource.thumbnail)
         BoardChannel.broadcast_to board_resource.board,
           action: "board_#{resource_name}_added",
           "board_#{resource_name}".to_sym => board_resource.to_user_params if board_resource

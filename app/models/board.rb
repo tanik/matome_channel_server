@@ -3,6 +3,7 @@ class Board < ApplicationRecord
   include BoardSearchable
 
   # relation
+  has_one :first_comment, ->{ order(id: :asc).limit(1) }, class_name: 'Comment'
   has_many :favorite_boards
   has_many :comments
   has_many :comment_favorites, through: :comments, source: :favorite_comments
@@ -23,23 +24,15 @@ class Board < ApplicationRecord
   }
 
   def fav_count
-    favorite_boards.count
+    @fav_count ||= favorite_boards.count
   end
 
-  def first_comment
-    comments.limit(1).last.try(:content) || ""
+  def first_content
+    first_comment.try(:content) || ""
   end
 
   def thumbnail_url
-    targets = []
-    targets << images.cached.first
-    targets << websites.cached.first
-    target = targets.compact.sort{|a,b| b.created_at <=> a.created_at }.first
-    if target
-      target.thumbnail
-    else
-      "#{ENV["AWS_S3_ENDPOINT"]}statics/placeholder.png"
-    end
+    super || "#{ENV["AWS_S3_ENDPOINT"]}statics/placeholder.png"
   end
 
   def update_score
@@ -56,10 +49,12 @@ class Board < ApplicationRecord
   end
 
   def to_index_params
-    [:id, :title, :score, :res_count, :fav_count, :first_comment, :thumbnail_url].inject({}) do |ret, key|
+    params = [:id, :title, :score, :res_count, :fav_count, :thumbnail_url].inject({}) do |ret, key|
       ret[key] = self.send(key)
       ret
     end
+    params[:first_comment] = first_content
+    params
   end
 
   def to_show_params

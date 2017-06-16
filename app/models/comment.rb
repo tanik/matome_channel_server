@@ -67,7 +67,8 @@ class Comment < ApplicationRecord
           score DESC, id DESC
         limit ?
       EOS
-      self.find_by_sql([sql, time, time, limit]).map(&:reload)
+      comment_ids = self.find_by_sql([sql, time, time, limit]).map(&:id)
+      Comment.where(id: comment_ids)
     end
   end
 
@@ -83,14 +84,8 @@ class Comment < ApplicationRecord
   end
 
   def to_user_params_with_board
-    params = [:id, :user_id, :num, :name, :content, :created_at, :hash_id].inject({}) do |ret, key|
-      ret[key] = self.send(key)
-      ret
-    end
+    params = to_user_params
     params[:board] = board.to_index_params
-    params[:websites] = websites.map(&:to_user_params)
-    params[:images] = images.map(&:to_user_params)
-    params[:favorite_user_ids] = favorite_comments.map(&:user_id)
     params
   end
 

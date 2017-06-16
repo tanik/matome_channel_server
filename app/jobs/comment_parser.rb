@@ -50,6 +50,7 @@ class CommentParser
     if created
       ResourceCreatorJob.perform_async(klass.name, resource.id, board_resouce.id, comment_resource.id)
     else
+      comment.board.update(thumbnail_url: resource.thumbnail)
       BoardChannel.broadcast_to comment.board,
         action: "board_#{klass_name}_added",
         "board_#{klass_name}".to_sym =>  board_resouce.to_user_params if board_resouce.persisted?
