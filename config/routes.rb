@@ -30,8 +30,16 @@ Rails.application.routes.draw do
   end
   get 'comments/popular', controller: :comments, action: :popular
   resources :contacts, only: [:create]
-  get 'my', controller: :my, action: :index
-  get 'my/comments', controller: :my, action: :comments
+  resources :my, only: [:index] do
+    collection do
+      get 'timeline_comments'
+      get 'boards'
+      get 'comments'
+      get 'favorite_boards'
+      get 'favorite_comments'
+      get 'histories'
+    end
+  end
 
   # sidekiq
   Sidekiq::Web.use Rack::Auth::Basic do |username, password|

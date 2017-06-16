@@ -9,7 +9,9 @@ class User < ApplicationRecord
   has_many :boards
   has_many :comments
   has_many :favorite_boards
+  has_many :my_favorite_boards, through: :favorite_boards, source: :board
   has_many :favorite_comments
+  has_many :my_favorite_comments, through: :favorite_comments, source: :comment
   has_many :histories
 
   def add_history board
