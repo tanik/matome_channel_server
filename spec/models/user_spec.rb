@@ -17,8 +17,8 @@ RSpec.describe User, type: :model do
     context "when the same board doesn't exist" do
       it{ expect{ subject }.to change(History, :count).by(1) }
     end
-    context "when the 30 history exist" do
-      before{ FactoryGirl.create_list(:history, 30, user: user) }
+    context "when the #{History::MAX_PER_USER} history exist" do
+      before{ FactoryGirl.create_list(:history, History::MAX_PER_USER, user: user) }
       it{ expect{ subject }.to_not change(History, :count) }
       it{ subject; expect( user.reload.histories.last.board ).to eq(board) }
     end

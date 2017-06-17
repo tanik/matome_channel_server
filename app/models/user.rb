@@ -18,6 +18,8 @@ class User < ApplicationRecord
     histories.find_by(board_id: board.id).try(:destroy)
     histories.create(board: board)
     new_histories = histories.order(id: :desc).to_a
-    History.where(id: new_histories[30..-1].map(&:id)).delete_all if new_histories.size > 30
+    if new_histories.size > History::MAX_PER_USER
+      History.where(id: new_histories[History::MAX_PER_USER..-1].map(&:id)).delete_all
+    end
   end
 end

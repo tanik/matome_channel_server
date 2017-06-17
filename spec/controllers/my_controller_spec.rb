@@ -87,14 +87,23 @@ RSpec.describe MyController, type: :controller do
       end
 
       it do
-        get :boards
-        expect(response.body).to eq(my_boards.reverse.map(&:to_index_params).to_json)
+        get :boards, params: {per: 20, page: 1}
+        expect(response.body).to eq({
+          boards: my_boards.reverse.map(&:to_index_params),
+          pagination: {
+            per: 20,
+            total: 1,
+            current: 1,
+            next: nil,
+            prev: nil,
+          }
+        }.to_json)
       end
     end
 
     context 'when user not sign in' do
       it do
-        get :boards
+        get :boards, params: {per: 20, page: 1}
         expect(response.status).to eq(401)
       end
     end
@@ -113,14 +122,23 @@ RSpec.describe MyController, type: :controller do
       end
 
       it do
-        get :favorite_boards
-        expect(response.body).to eq(my_favorite_boards.map(&:board).reverse.map(&:to_index_params).to_json)
+        get :favorite_boards, params: {per: 20, page: 1}
+        expect(response.body).to eq({
+          boards: my_favorite_boards.map(&:board).reverse.map(&:to_index_params),
+          pagination: {
+            per: 20,
+            total: 1,
+            current: 1,
+            next: nil,
+            prev: nil,
+          }
+        }.to_json)
       end
     end
 
     context 'when user not sign in' do
       it do
-        get :favorite_boards
+        get :favorite_boards, params: {per: 20, page: 1}
         expect(response.status).to eq(401)
       end
     end
@@ -139,14 +157,23 @@ RSpec.describe MyController, type: :controller do
       end
 
       it do
-        get :comments
-        expect(response.body).to eq(my_comments.reverse.map(&:to_user_params_with_board).to_json)
+        get :comments, params: {per: 20, page: 1}
+        expect(response.body).to eq({
+          comments: my_comments.reverse.map(&:to_user_params_with_board),
+          pagination: {
+            per: 20,
+            total: 1,
+            current: 1,
+            next: nil,
+            prev: nil,
+          }
+        }.to_json)
       end
     end
 
     context 'when user not sign in' do
       it do
-        get :comments
+        get :comments, params: {per: 20, page: 1}
         expect(response.status).to eq(401)
       end
     end
@@ -165,14 +192,23 @@ RSpec.describe MyController, type: :controller do
       end
 
       it do
-        get :favorite_comments
-        expect(response.body).to eq(my_favorite_comments.map(&:comment).reverse.map(&:to_user_params_with_board).to_json)
+        get :favorite_comments, params: {per: 20, page: 1}
+        expect(response.body).to eq({
+          comments: my_favorite_comments.map(&:comment).reverse.map(&:to_user_params_with_board),
+          pagination: {
+            per: 20,
+            total: 1,
+            current: 1,
+            next: nil,
+            prev: nil,
+          }
+        }.to_json)
       end
     end
 
     context 'when user not sign in' do
       it do
-        get :favorite_comments
+        get :favorite_comments, params: {per: 20, page: 1}
         expect(response.status).to eq(401)
       end
     end
@@ -191,14 +227,23 @@ RSpec.describe MyController, type: :controller do
       end
 
       it do
-        get :histories
-        expect(response.body).to eq(my_histories.reverse.map{|h| h.board.to_index_params }.to_json)
+        get :histories, params: {per: 20, page: 1}
+        expect(response.body).to eq({
+          boards: my_histories.reverse.map{|h| h.board.to_index_params },
+          pagination: {
+            per: 20,
+            total: 1,
+            current: 1,
+            next: nil,
+            prev: nil,
+          }
+        }.to_json)
       end
     end
 
     context 'when user not sign in' do
       it do
-        get :histories
+        get :histories, params: {per: 20, page: 1}
         expect(response.status).to eq(401)
       end
     end

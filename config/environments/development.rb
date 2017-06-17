@@ -53,7 +53,7 @@ Rails.application.configure do
       origins '*'
       resource '*',
       headers: :any,
-      expose: ['access-token', 'uid', 'client'],
+      expose: ['access-token', 'uid', 'client', 'expiry'],
       methods: [:get, :post, :put, :delete, :options],
       max_age: 0
     end

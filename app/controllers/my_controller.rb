@@ -32,13 +32,31 @@ class MyController < ApplicationController
   def boards
     boards = current_user.boards.order(id: :desc).includes(:first_comment).
       page(params[:page]).per(params[:per])
-    render json: boards.map(&:to_index_params)
+    render json: {
+      boards: boards.map(&:to_index_params),
+      pagination: {
+        per: boards.limit_value,
+        total: boards.total_pages,
+        current: boards.current_page,
+        next: boards.next_page,
+        prev: boards.prev_page,
+      }
+    }
   end
 
   def favorite_boards
     boards = current_user.my_favorite_boards.order(id: :desc).includes(:first_comment).
       page(params[:page]).per(params[:per])
-    render json: boards.map(&:to_index_params)
+    render json: {
+      boards: boards.map(&:to_index_params),
+      pagination: {
+        per: boards.limit_value,
+        total: boards.total_pages,
+        current: boards.current_page,
+        next: boards.next_page,
+        prev: boards.prev_page,
+      }
+    }
   end
 
   def comments
@@ -46,7 +64,16 @@ class MyController < ApplicationController
       includes(board: [:first_comment, :favorite_boards]).
       includes(:websites).includes(:images).includes(:favorite_comments).
       page(params[:page]).per(params[:per])
-    render json: comments.map(&:to_user_params_with_board)
+    render json: {
+      comments: comments.map(&:to_user_params_with_board),
+      pagination: {
+        per: comments.limit_value,
+        total: comments.total_pages,
+        current: comments.current_page,
+        next: comments.next_page,
+        prev: comments.prev_page,
+      }
+    }
   end
 
   def favorite_comments
@@ -54,10 +81,29 @@ class MyController < ApplicationController
       includes(board: [:first_comment, :favorite_boards]).
       includes(:websites).includes(:images).includes(:favorite_comments).
       page(params[:page]).per(params[:per])
-    render json: comments.map(&:to_user_params_with_board)
+    render json: {
+      comments: comments.map(&:to_user_params_with_board),
+      pagination: {
+        per: comments.limit_value,
+        total: comments.total_pages,
+        current: comments.current_page,
+        next: comments.next_page,
+        prev: comments.prev_page,
+      }
+    }
   end
 
   def histories
-    render json: current_user.histories.order(id: :desc).map{|h| h.board.to_index_params }
+    histories = current_user.histories.order(id: :desc).page(params[:page]).per(params[:per])
+    render json: {
+      boards: histories.map{|h| h.board.to_index_params },
+      pagination: {
+        per: histories.limit_value,
+        total: histories.total_pages,
+        current: histories.current_page,
+        next: histories.next_page,
+        prev: histories.prev_page,
+      }
+    }
   end
 end
