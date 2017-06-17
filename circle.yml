@@ -28,16 +28,8 @@ test:
   override:
     - bundle exec rspec
 
-## TODO
-#deployment:
-#  staging:
-#    branch: master
-#    heroku:
-#      appname: foo-bar-123
-
-## Custom notifications
-#notify:
-#  webhooks:
-#    # A list of hashes representing hooks. Only the url field is supported.
-#    - url: https://someurl.com/hooks/circle
-
+deployment:
+  production:
+    branch: master
+    commands:
+      - bundle exec cap production deploy
