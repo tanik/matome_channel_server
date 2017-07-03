@@ -21,4 +21,20 @@ RSpec.describe Website, type: :model do
       end
     end
   end
+
+  describe "correct_title" do
+    subject{ FactoryGirl.build(:website, title: title).save }
+
+    context "when title length less than 255" do
+      let(:title){ "あ" * 254 }
+      it{ is_expected.to be_truthy }
+      it{ subject; expect(Website.last.title).to eq(title)}
+    end
+
+    context "when title length less than 255" do
+      let(:title){ "あ" * 255 }
+      it{ is_expected.to be_truthy }
+      it{ subject; expect(Website.last.title).to eq("あ"*254+"…")}
+    end
+  end
 end

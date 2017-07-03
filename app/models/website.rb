@@ -12,6 +12,13 @@ class Website < ApplicationRecord
   # scopes
   scope :cached, ->(){ where.not(title:nil, thumbnail_url: nil, full_url: nil) }
 
+  # callbacks
+  before_save :correct_title
+
+  def correct_title
+    self.title = self.title[0...254] + "…" if title.to_s.length >= 255
+  end
+
   def thumbnail
     "#{ENV['AWS_S3_ENDPOINT']}#{self.thumbnail_url}"
   end
